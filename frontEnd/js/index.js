@@ -9,7 +9,7 @@ fetch("http://localhost:3000/api/cameras").then((response) => {
 
     data.forEach(camera => {
         
-        const cameraId = camera.id
+        const cameraId = camera._id
         const cameraName = camera.name;
         const cameraDescription = camera.description;
         const cameraLenses = camera.lenses;
@@ -34,12 +34,18 @@ fetch("http://localhost:3000/api/cameras").then((response) => {
         const cameraPriceB = cameraPriceA / 100;
         price.textContent = cameraPriceB + '€';
 
+        const cameraPageLink = document.createElement('a');
+        cameraPageLink.setAttribute('href', `camera.html?id=${cameraId}`);
+        cameraPageLink.setAttribute('class', 'text-center');
+        cameraPageLink.textContent = 'Voir le produit';
+
         cameraBoxRow.appendChild(cameraBoxCol);
         cameraBoxCol.appendChild(cameraTitle);
         cameraBoxCol.appendChild(cameraPhoto);
         cameraBoxCol.appendChild(price);
+        cameraBoxCol.appendChild(cameraPageLink);
     });
 })
 .catch((err) => {
     console.log(err)
-})
+});
