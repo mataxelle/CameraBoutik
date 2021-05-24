@@ -20,6 +20,8 @@ fetch('http://localhost:3000/api/cameras/'+id).then((response) => {
 }).then((data) => {
     console.log(data);
 
+    const cameraId = data._id;
+    const cameraName = data.name;
     const cameraPriceA = data.price;
     const cameraDescription = data.description;
     const cameraLenses = data.lenses;
@@ -27,22 +29,27 @@ fetch('http://localhost:3000/api/cameras/'+id).then((response) => {
     const cameraPageBoxCol = document.createElement('div');
     cameraPageBoxCol.setAttribute('class', 'd-flex flex-column img-fluid');
 
+    //--------------title--------------
     const cameraTitle = document.createElement('h2');
     cameraTitle.setAttribute('class', 'text-center');
-    cameraTitle.textContent = data.name;
+    cameraTitle.textContent = cameraName;
 
+    //--------------image--------------
     const cameraPhoto = document.createElement('img');
     cameraPhoto.src = data.imageUrl;
-    cameraPhoto.setAttribute('class', 'img-thumbnail');
     cameraPhoto.setAttribute('width', 'auto');
-    cameraPhoto.setAttribute('height', '200');
+    cameraPhoto.setAttribute('height', 'auto');
     cameraPhoto.setAttribute('alt', 'image appareil photo');
 
+    //--------------price--------------
     const price = document.createElement('span');
     price.setAttribute('class', 'my-3')
     const cameraPriceB = cameraPriceA / 100;
     price.textContent = cameraPriceB + '€';
 
+    //--------------lenses form--------------
+    const formLenses = document.createElement('form');
+    formLenses.setAttribute('class', 'my-3')
     const lensesLabel = document.createElement('label');
     lensesLabel.setAttribute('for', 'select-lenses');
     lensesLabel.textContent = "Lentilles";
@@ -57,6 +64,7 @@ fetch('http://localhost:3000/api/cameras/'+id).then((response) => {
         selectLenses.appendChild(lensOption);
     }
 
+    //--------------description--------------
     const descriptionDiv = document.createElement('div');
     descriptionDiv.setAttribute('class', 'my-5');
     descriptionDiv.textContent = "CARCTERISTIQUES TECHNIQUES";
@@ -65,20 +73,58 @@ fetch('http://localhost:3000/api/cameras/'+id).then((response) => {
     description.textContent = cameraDescription;
 
 
-    const cameraPagePanierLink = document.createElement('a');
-    cameraPagePanierLink.setAttribute('href', `panier.html`);
+    //--------------button cart--------------
+    const cameraPagePanierLink = document.createElement('button');
+    cameraPagePanierLink.setAttribute('type', 'submit');
     cameraPagePanierLink.setAttribute('class', 'text-center');
     cameraPagePanierLink.textContent = 'Ajouter au panier';
+
 
     cameraPageBoxRow.appendChild(cameraPageBoxCol);
     cameraPageBoxCol.appendChild(cameraTitle);
     cameraPageBoxCol.appendChild(cameraPhoto);
     cameraPageBoxCol.appendChild(price);
-    cameraPageBoxCol.appendChild(lensesLabel);
-    cameraPageBoxCol.appendChild(selectLenses);
+    cameraPageBoxCol.appendChild(formLenses);
+    formLenses.appendChild(lensesLabel);
+    formLenses.appendChild(selectLenses);
     cameraPageBoxCol.appendChild(descriptionDiv);
     descriptionDiv.appendChild(description);
     cameraPageBoxCol.appendChild(cameraPagePanierLink);
+
+    //-------------------choix select et envoi au panier-------------------
+
+    cameraPagePanierLink.addEventListener('click', (event) => {
+        event.preventDefault();
+
+        const resultChoice = selectLenses.value;
+        console.log(resultChoice);
+
+        const product = {
+            //id : cameraId,
+            name: cameraName,
+            price: cameraPriceB,
+            lenses: resultChoice,
+            quantity: 1
+        };
+
+        let localStorageProduct = JSON.parse(localStorage.getItem('product'));
+
+        if (localStorageProduct) {
+            
+            localStorageProduct.push(product);
+            localStorage.setItem('product', JSON.stringify(localStorageProduct));
+
+            console.log(localStorageProduct);
+        } else {
+            localStorageProduct = [];
+            localStorageProduct.push(product);
+            localStorage.setItem('product', JSON.stringify(localStorageProduct));
+
+            console.log(localStorageProduct);
+        }
+        window.location.href = 'cart.html';
+    })
+    console.log(cameraPagePanierLink);
 
 }).catch((err) => {
     console.log(err);
