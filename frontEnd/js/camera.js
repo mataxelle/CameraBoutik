@@ -100,7 +100,7 @@ fetch('http://localhost:3000/api/cameras/'+id).then((response) => {
         console.log(resultChoice);
 
         const product = {
-            //id : cameraId,
+            id : cameraId,
             name: cameraName,
             price: cameraPriceB,
             lenses: resultChoice,
