@@ -21,75 +21,59 @@ if (localStorageProduct < 1) {
 
         tableProduct = tableProduct + `
         <div class="row text-center border cart_row my-2">
-                        <div class="col">Nom
+                        <div class="col-3">Nom
                             <div class="name">${oneProduct.name}</div>
                         </div>
-                        <div class="col">Lentilles
+                        <div class="col-3">Lentilles
                             <div class="lenses">${oneProduct.lenses}</div>
                         </div>
-                        <div class="col">Quantité
+                        <div class="col-2">Qt
                             <div class="quantity">${oneProduct.quantity}</div>
                         </div>
-                        <div class="col">Prix
-                            <div class="price">${oneProduct.price}</div>
+                        <div class="col-2">Prix
+                            <div class="price">${oneProduct.price}€</div>
                         </div>
-                        <div class="col">
+                        <div class="col-1">
                             <button type="button" class="mt-2 supp">X</button>
                         </div>
         </div>
         `;
 
-        let totalQuantity = oneProduct.quantity++;
+        let totalQuantity = oneProduct.quantity;
 
         let subTotal = oneProduct.price * totalQuantity;
 
         total = total + subTotal;
 
+        //--------------------Total cart-----------------------------------
+        let totalDiv = `
+            <div class="row">
+                <div class="col col-3 offset-9">Total :
+                    <span class="total">${total},00€</span>
+                </div>
+            </div>
+        `;
 
-        const cart_body = document.querySelector('.cart_full_msg');
-        cart_body.innerHTML = tableProduct;
+        const cartBody = document.querySelector('.cart_full_msg');
+        cartBody.innerHTML = tableProduct;
+        cartBody.innerHTML += totalDiv;  // += sinon remplace le premier innerHTML
 
-        let totalDiv = ` <div class="row">
-                            <div class="col col-3 offset-9">Total :
-                                <span class="total">${total}</span>
-                            </div>
-                        </div>
-    `;
-
-        cart_body.innerHTML += totalDiv;  // += sinon remplace le premier innerHTML
 
         const cancelBtn = document.querySelectorAll('.supp');
+
+        console.log(cartBody);
+
         cancelBtn.forEach(btn => {
             btn.addEventListener('click', (event) => {
                 event.preventDefault();
 
                 console.log('clique ok');
 
+                //cartBody.deleteRow(i);
                 localStorageProduct.splice(i, 1);
                 localStorage.setItem('product', JSON.stringify(localStorageProduct));
                 document.location.reload();
             })
         });
     }
-
-    /*
-    //-------------Cancel button------------------
-    const cancelBtnDiv = document.createElement('div');
-    cancelBtnDiv.setAttribute('class', 'col');
-    document.querySelector('.cart_row').appendChild(cancelBtnDiv);
-    const cancelBtn = document.createElement('button');
-    cancelBtn.textContent = "x";
-    cancelBtnDiv.appendChild(cancelBtn);
-    console.log(cancelBtn);
-
-    cancelBtn.addEventListener('click', (event) => {
-        event.preventDefault();
-
-        console.log('clique ok');
-
-        //tableProduct.deleteRow(i);
-        //localStorageProduct.splice(i, 1);
-        //localStorage.setItem('product', JSON.stringify(localStorageProduct));
-        //document.location.reload();
-    })*/
 }

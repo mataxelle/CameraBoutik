@@ -109,18 +109,19 @@ fetch('http://localhost:3000/api/cameras/'+id).then((response) => {
 
         let localStorageProduct = JSON.parse(localStorage.getItem('product'));
 
+        const productSendInCart = () => {
+            localStorageProduct.push(product);
+            localStorage.setItem('product', JSON.stringify(localStorageProduct));
+        };
+
         if (localStorageProduct) {
             
-            localStorageProduct.push(product);
-            localStorage.setItem('product', JSON.stringify(localStorageProduct));
+            productSendInCart();
 
-            console.log(localStorageProduct);
         } else {
-            localStorageProduct = [];
-            localStorageProduct.push(product);
-            localStorage.setItem('product', JSON.stringify(localStorageProduct));
 
-            console.log(localStorageProduct);
+            localStorageProduct = [];
+            productSendInCart();
         }
         window.location.href = 'cart.html';
     })
