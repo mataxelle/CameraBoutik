@@ -11,7 +11,6 @@ const urlSearchParams = new URLSearchParams(urlActuelle);
 console.log(urlSearchParams);
 
 const id = urlSearchParams.get('id');
-console.log(id);
 
 const cameraPageBoxRow = document.querySelector('.cameraPage_box');
 
@@ -125,7 +124,6 @@ fetch('http://localhost:3000/api/cameras/'+id).then((response) => {
         }
         window.location.href = 'cart.html';
     })
-    console.log(cameraPagePanierLink);
 
 }).catch((err) => {
     console.log(err);

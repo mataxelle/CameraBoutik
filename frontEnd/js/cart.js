@@ -1,3 +1,4 @@
+const apiUrl = 'http://localhost:3000/api/cameras' + '/';
 //récup du localStorage
 let localStorageProduct = JSON.parse(localStorage.getItem('product'));
 
@@ -21,7 +22,7 @@ if (localStorageProduct < 1) {
     for (let i = 0; i < localStorageProduct.length; i++) { //rows
         const oneProduct = localStorageProduct[i];
 
-        const row = tBody.insertRow(0);
+        const row = tBody.insertRow(-1);
 
         const cell1 = row.insertCell(0);
         const cell2 = row.insertCell(1);
@@ -53,6 +54,99 @@ if (localStorageProduct < 1) {
     }
 
     tFoot.textContent = `${total}`;
+
+    /////////////////////////////////// Information client //////////////////////
+    const submitCartForm = document.getElementById('cartForm');
+
+    const firstName = document.querySelector('#firstName');
+    const lastName = document.querySelector('#lastName');
+    const email = document.querySelector('#email');
+    const address = document.querySelector('#address');
+
+    submitCartForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+
+        console.log('clique form !');
+
+        let wordRegex = /[a-zA-Z-]/;
+        //let numberRegex = /[0-9]/
+        let addressRegex = /[a-zA-Z0-9\s]/;
+        //let caractRegex = /[!$%§^&*@(),.?":#{}|<>]/;
+        let emailRegex = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]/;
+
+        const firstNameValue = wordRegex.test(firstName.value);
+        const lastNameValue = wordRegex.test(lastName.value);
+        const emailValue = emailRegex.test(email.value);
+        const addressValue = addressRegex.test(address.value);
+
+        const errorFirstName = document.querySelector('.errorFirstName');
+        const errorLastName = document.querySelector('.errorLastName');
+        const errorEmail = document.querySelector('.errorEmail');
+        const errorAddress = document.querySelector('.errorAddress');
+
+
+        if (firstNameValue == "") {
+            errorFirstName.innerHTML = "Vous devez indiquer votre prénom ! ";
+            firstName.focus();
+            return false;
+        } else if (firstName.value.length < 2 || firstName.value.length > 20) {
+            errorFirstName.innerHTML = "Votre prénom doit contenir en tre 2 et 20 caractères alphabétiques !";
+            firstName.focus();
+            return false;
+        }
+
+        if (lastNameValue == "") {
+            errorLastName. innerHTML = "Vous devez indiquer votre nom ! ";
+            lastName.focus();
+            return false;
+        } else if (lastName.value.length < 2 || lastName.value.length > 20) {
+            errorLastName.innerHTML = "Votre prénom doit contenir en tre 2 et 20 caractères alphabétiques !";
+            lastName.focus();
+            return false;
+        }
+
+        if (emailValue == "") {
+            errorEmail.innerHTML = "Vous devez indiquer votre email ! ";
+            email.focus();
+            return false;
+        }
+
+        if (addressValue == "") {
+            errorAddress.innerHTML = "Vous devez indiquer votre adresse ! ";
+            address.focus();
+            return false;
+        }
+
+        const contact = {
+            firstName: firstName.value,
+            lastName: lastName.value,
+            email: email.value,
+            address: address.value
+        }
+
+        const contactInfo = localStorage.setItem('contact', JSON.stringify(contact));
+
+        const products = []
+
+        const options = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                contact, products
+            })
+        }
+
+        fetch(apiUrl + "order", options)
+        .then(response => response.json())
+        .then(json => {
+            console.log('Success:', json);
+          })
+        .catch((error) => {
+            console.log('Error:', error);
+        });
+    })
 
 }
 

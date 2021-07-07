@@ -51,24 +51,28 @@
 
                 <div class="row mx-5 border">
                     <div class="col">
-                        <form>
+                        <form method="POST" name="cartForm" id="cartForm" >
                             <div class="form-group">
                                 <label for="lastName">Nom</label>
-                                <input type="text" class="form-control" id="lastName" aria-describedby="emailHelp">
+                                <input type="text" class="form-control" name="lastName" id="lastName">
+                                <div class="errorLastName"></div>
                             </div>
                             <div class="form-group">
-                                <label for="firstName">firstName</label>
-                                <input type="text" class="form-control" id="firstName">
+                                <label for="firstName">Prénom</label>
+                                <input type="text" class="form-control" name="firsName" id="firstName">
+                                <div class="errorFirstName"></div>
                             </div>
                             <div class="form-group">
                                 <label for="email">Email</label>
-                                <input type="email" class="form-control" id="email" aria-describedby="emailHelp">
+                                <input type="email" class="form-control" name="email" id="email" aria-describedby="emailHelp">
+                                <div class="errorEmail"></div>
                             </div>
                             <div class="form-group">
-                                <label for="adress">Adresse de livraison</label>
-                                <input type="text" class="form-control" id="adress">
+                                <label for="address">Adresse de livraison</label>
+                                <input type="text" class="form-control" name="address" id="address">
+                                <div class="errorAddress"></div>
                             </div>
-                            <button type="submit" class="my-4 btn btn-primary">Valider</button>
+                            <button type="submit" class="my-4 btn btn-primary" id="submitFormButton">Valider</button>
                         </form>
                     </div>
                 </div>
