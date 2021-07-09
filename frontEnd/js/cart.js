@@ -17,7 +17,7 @@ if (localStorageProduct < 1) {
     let total = 0;
 
     const tBody = document.getElementById('cartBody');
-    const tFoot = document.getElementById('cartFoot');
+    const cartTotal = document.getElementById('cartTotal');
 
     for (let i = 0; i < localStorageProduct.length; i++) { //rows
         const oneProduct = localStorageProduct[i];
@@ -44,7 +44,6 @@ if (localStorageProduct < 1) {
 
         suppButton.addEventListener('click', (e) => {
             e.preventDefault();
-            console.log('clique ok btn supp');
 
             tBody.deleteRow(i);
             localStorageProduct.splice(i, 1);
@@ -53,15 +52,25 @@ if (localStorageProduct < 1) {
         })
     }
 
-    tFoot.textContent = `${total}`;
+    cartTotal.textContent = `Total du panier : ${total}€`;
 
     /////////////////////////////////// Information client //////////////////////
+    //let contact;
+    
+    /// tableau des Id pour l'Api
+    let products = [];
+    localStorageProduct.forEach(item => {
+        products.push(item.id)
+    });
+    console.log(products);
+    
     const submitCartForm = document.getElementById('cartForm');
 
     const firstName = document.querySelector('#firstName');
     const lastName = document.querySelector('#lastName');
     const email = document.querySelector('#email');
     const address = document.querySelector('#address');
+    const city = document.querySelector('#city');
 
     submitCartForm.addEventListener('submit', (e) => {
         e.preventDefault();
@@ -69,20 +78,20 @@ if (localStorageProduct < 1) {
         console.log('clique form !');
 
         let wordRegex = /[a-zA-Z-]/;
-        //let numberRegex = /[0-9]/
         let addressRegex = /[a-zA-Z0-9\s]/;
-        //let caractRegex = /[!$%§^&*@(),.?":#{}|<>]/;
         let emailRegex = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]/;
 
         const firstNameValue = wordRegex.test(firstName.value);
         const lastNameValue = wordRegex.test(lastName.value);
         const emailValue = emailRegex.test(email.value);
         const addressValue = addressRegex.test(address.value);
+        const cityValue = addressRegex.test(city.value);
 
         const errorFirstName = document.querySelector('.errorFirstName');
         const errorLastName = document.querySelector('.errorLastName');
         const errorEmail = document.querySelector('.errorEmail');
         const errorAddress = document.querySelector('.errorAddress');
+        const errorCity = document.querySelector('.errorCity');
 
 
         if (firstNameValue == "") {
@@ -117,36 +126,58 @@ if (localStorageProduct < 1) {
             return false;
         }
 
-        const contact = {
+        if (cityValue == "") {
+            errorCity.innerHTML = "Vous devez indiquer votre ville ! ";
+            city.focus();
+            return false;
+        }
+
+        let contact = {
             firstName: firstName.value,
             lastName: lastName.value,
             email: email.value,
-            address: address.value
+            address: address.value,
+            city: city.value
+        };
+
+        const cartInformation = {
+            contact: contact,
+            products: products
+        }
+        console.log(cartInformation);
+
+        if (firstNameValue !== "" && lastNameValue !== "" && emailValue !== "" && addressValue !== "" && cityValue !== "") {
+
+            submitFormData(cartInformation);
+            console.log('cart info envoyé');
+
+        } else {
+            console.log('cart info non envoyés !')
         }
 
-        const contactInfo = localStorage.setItem('contact', JSON.stringify(contact));
-
-        const products = []
-
-        const options = {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                contact, products
-            })
-        }
-
-        fetch(apiUrl + "order", options)
-        .then(response => response.json())
-        .then(json => {
-            console.log('Success:', json);
-          })
-        .catch((error) => {
-            console.log('Error:', error);
-        });
     })
+
+    async function submitFormData (data) {
+        try {
+            const options = {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            }
+    
+            const response = await fetch(apiUrl + "order", options);
+            const datas = await response.json();
+            if(response.ok){
+                window.location.href = 'orderConfirmation.html?orderId='+ datas.orderId;
+                console.log(datas.orderId);
+            }
+            return datas;
+        } catch (error) {
+            console.log(error);
+        }
+    }
 
 }
 
