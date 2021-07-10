@@ -1,12 +1,9 @@
 const apiUrl = 'http://localhost:3000/api/cameras' + '/';
-//récup du localStorage
 let localStorageProduct = JSON.parse(localStorage.getItem('product'));
-
 
 if (localStorageProduct < 1) {
 
     document.querySelector('.cart_empty_msg').textContent = "Votre panier est vide !";
-
     document.querySelector('.cart_full_msg').style.display = 'none';
     document.querySelector('.user_informations').style.display = 'none';
 
@@ -15,7 +12,6 @@ if (localStorageProduct < 1) {
     document.querySelector('.cart_empty_msg').style.display = 'none';
 
     let total = 0;
-
     const tBody = document.getElementById('cartBody');
     const cartTotal = document.getElementById('cartTotal');
 
@@ -23,7 +19,6 @@ if (localStorageProduct < 1) {
         const oneProduct = localStorageProduct[i];
 
         const row = tBody.insertRow(-1);
-
         const cell1 = row.insertCell(0);
         const cell2 = row.insertCell(1);
         const cell3 = row.insertCell(2);
@@ -44,28 +39,23 @@ if (localStorageProduct < 1) {
 
         suppButton.addEventListener('click', (e) => {
             e.preventDefault();
-
             tBody.deleteRow(i);
             localStorageProduct.splice(i, 1);
             localStorage.setItem('product', JSON.stringify(localStorageProduct));
             document.location.reload()
         })
     }
-
     cartTotal.textContent = `Total du panier : ${total}€`;
 
-    /////////////////////////////////// Information client //////////////////////
-    //let contact;
+    /////////////////////////////////// Information client et validation commande //////////////////////
     
     /// tableau des Id pour l'Api
     let products = [];
     localStorageProduct.forEach(item => {
         products.push(item.id)
     });
-    console.log(products);
     
     const submitCartForm = document.getElementById('cartForm');
-
     const firstName = document.querySelector('#firstName');
     const lastName = document.querySelector('#lastName');
     const email = document.querySelector('#email');
@@ -74,8 +64,6 @@ if (localStorageProduct < 1) {
 
     submitCartForm.addEventListener('submit', (e) => {
         e.preventDefault();
-
-        console.log('clique form !');
 
         let wordRegex = /[a-zA-Z-]/;
         let addressRegex = /[a-zA-Z0-9\s]/;
@@ -144,15 +132,10 @@ if (localStorageProduct < 1) {
             contact: contact,
             products: products
         }
-        console.log(cartInformation);
 
         if (firstNameValue !== "" && lastNameValue !== "" && emailValue !== "" && addressValue !== "" && cityValue !== "") {
-
             submitFormData(cartInformation);
-            console.log('cart info envoyé');
-
-        } else {
-            console.log('cart info non envoyés !')
+            localStorage.setItem('contact', JSON.stringify(contact));
         }
 
     })
@@ -166,20 +149,17 @@ if (localStorageProduct < 1) {
                 },
                 body: JSON.stringify(data)
             }
-    
             const response = await fetch(apiUrl + "order", options);
             const datas = await response.json();
             if(response.ok){
                 window.location.href = 'orderConfirmation.html?orderId='+ datas.orderId;
-                console.log(datas.orderId);
             }
             return datas;
         } catch (error) {
             console.log(error);
         }
     }
-
-}
+};
 
 /////////////////// Fonctionnne mais je ne parvenais pas à a supprimer d'article précis avec ce code, seule le denier l'était //////////////////////////////
 /*

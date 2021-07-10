@@ -1,6 +1,5 @@
 //Récup url du produit
 const urlActuelle = window.location.search;
-console.log(urlActuelle);
 
 //1er méthode pour extraire l'id dans l'url
 /*const id = urlActuelle.slice(4);
@@ -11,13 +10,13 @@ const urlSearchParams = new URLSearchParams(urlActuelle);
 console.log(urlSearchParams);
 
 const id = urlSearchParams.get('id');
+console.log(id);
 
 const cameraPageBoxRow = document.querySelector('.cameraPage_box');
 
 fetch('http://localhost:3000/api/cameras/'+id).then((response) => {
     return response.json()
 }).then((data) => {
-    console.log(data);
 
     const cameraId = data._id;
     const cameraName = data.name;
@@ -96,7 +95,6 @@ fetch('http://localhost:3000/api/cameras/'+id).then((response) => {
         event.preventDefault();
 
         const resultChoice = selectLenses.value;
-        console.log(resultChoice);
 
         const product = {
             id : cameraId,
@@ -124,7 +122,6 @@ fetch('http://localhost:3000/api/cameras/'+id).then((response) => {
         }
         window.location.href = 'cart.html';
     })
-
 }).catch((err) => {
     console.log(err);
 });
